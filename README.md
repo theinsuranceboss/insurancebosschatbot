@@ -18,7 +18,7 @@ You can embed this chatbot widget into **any website or project** by simply past
 Add this single script tag right before the closing `</body>` tag on any page:
 
 ```html
-<script src="https://musical-pavlova-e6c896.netlify.app/embed.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/theinsuranceboss/insurancebosschatbot@main/embed.js"></script>
 ```
 
 That's it! The chatbot will render as a floating button in the bottom-right corner of the page.
