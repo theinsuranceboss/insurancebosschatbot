@@ -1,6 +1,6 @@
 (function() {
     // 1. Set the base URL where this script is hosted to correctly load assets
-    const baseUrl = 'https://musical-pavlova-e6c896.netlify.app';
+    const baseUrl = 'https://cdn.jsdelivr.net/gh/theinsuranceboss/insurancebosschatbot@main';
 
     // Set global base URL for main.js to access knowledge_base.json
     window.INSURANCE_BOSS_BASE_URL = baseUrl;
