@@ -1,0 +1,195 @@
+{
+  "company_name": "The Insurance Boss",
+  "tagline": "Smart Coverage, Serious Protection",
+  "logo_url": "https://theinsuranceboss.com/wp-content/uploads/2025/10/Logo-1.png",
+  "description": "The Insurance Boss is a national insurance marketing and consulting platform designed to help individuals and businesses understand, optimize, and protect their insurance coverage. Powered by affiliate licensed agents, they focus on smarter coverage, better pricing, and long-term risk strategy.",
+  "contact": {
+    "phone": "732-COVERED (268-3373)",
+    "email": "info@theinsuranceboss.com",
+    "locations": [
+      "Red Bank, New Jersey 07701",
+      "Staten Island, New York 10309",
+      "Wellington, Florida 33414",
+      "Scottsdale, Arizona 85255",
+      "Charleston, South Carolina (Coming Soon)"
+    ]
+  },
+  "insurance_types": {
+    "commercial": {
+      "general_liability": {
+        "title": "General Liability Insurance",
+        "description": "Protects against customer injuries, property damage, and advertising claims. Includes lawsuit defense coverage.",
+        "features": ["Bodily injury and property damage", "Personal and advertising injury", "Legal defense costs", "Premises liability"],
+        "url": "https://theinsuranceboss.com/general-liability/"
+      },
+      "bop": {
+        "title": "Business Owner's Policy (BOP)",
+        "description": "A '3-in-1' bundle combining General Liability, Property Insurance, and Business Interruption coverage. Offers average savings of 9%.",
+        "features": ["Property insurance", "General liability", "Business interruption", "Equipment breakdown"],
+        "url": "https://theinsuranceboss.com/bop/"
+      },
+      "workers_comp": {
+        "title": "Workers’ Compensation",
+        "description": "Mandatory protection covering medical costs and lost wages for work-related injuries; protects businesses from lawsuits.",
+        "features": ["Medical expenses", "Lost wages", "Disability benefits", "Legal defense"],
+        "url": "https://theinsuranceboss.com/workers-comp/",
+        "quote_form": "business_workers_comp"
+      },
+      "commercial_auto": {
+        "title": "Commercial Auto Insurance",
+        "description": "Coverage for business vehicles with higher limits than personal auto; covers employees while driving for work.",
+        "features": ["Liability coverage", "Physical damage", "Medical payments", "Fleet coverage"],
+        "url": "https://theinsuranceboss.com/commercial-auto/"
+      },
+      "cyber_liability": {
+        "title": "Cyber Liability Insurance",
+        "description": "Protection against data breaches, ransomware, and cyber extortion. Includes breach response and business interruption.",
+        "features": ["Data breach response", "Cyber extortion", "Data recovery", "Regulatory defense"],
+        "url": "https://theinsuranceboss.com/cyber-liability/"
+      },
+      "employee_benefits": {
+        "title": "Employee Benefits",
+        "description": "Secure their future, strengthen your team. Group Health, Group Life, Short/Long-Term Disability, and Retirement Plans (401k).",
+        "url": "https://theinsuranceboss.com/employee-benefits/"
+      }
+    },
+    "life": {
+      "whole_life": {
+        "title": "Whole Life Insurance",
+        "description": "Lifetime coverage with guaranteed premiums and tax-deferred cash value growth.",
+        "features": ["Lifetime coverage", "Guaranteed level premiums", "Cash value growth", "Policy loans"],
+        "url": "https://theinsuranceboss.com/whole-life/",
+        "quote_form": "life_insurance"
+      },
+      "universal_life": {
+        "title": "Universal Life Insurance",
+        "description": "Flexible premiums and death benefits with cash value accumulation.",
+        "features": ["Flexible premiums", "Adjustable death benefit", "Cash value accumulation", "Tax-deferred growth"],
+        "url": "https://theinsuranceboss.com/universal-life/",
+        "quote_form": "life_insurance"
+      },
+      "term_life": {
+        "title": "Term Life Insurance",
+        "description": "Affordable protection for a set period with tax-free death benefits.",
+        "features": ["Lowest cost option", "Level premiums", "Convertible to permanent", "Tax-free death benefit"],
+        "url": "https://theinsuranceboss.com/term-life/",
+        "quote_form": "life_insurance"
+      },
+      "mortgage_protection": {
+        "title": "Mortgage Protection",
+        "description": "Specifically designed to pay off your mortgage if you pass away.",
+        "features": ["Matches mortgage balance", "Level or decreasing benefit", "Ensures family keeps home"],
+        "url": "https://theinsuranceboss.com/mortgage-protection/"
+      },
+      "disability": {
+        "title": "Disability Insurance",
+        "description": "Replaces 50-70% of income if you are unable to work due to illness or injury.",
+        "features": ["Income replacement", "Short-term or long-term", "Covers illness and injury"],
+        "url": "https://theinsuranceboss.com/disability/"
+      }
+    },
+    "personal": {
+      "auto": {
+        "title": "Auto Insurance",
+        "description": "Liability, collision, and comprehensive coverage. Discounts available for multi-car, bundling, and good drivers.",
+        "features": ["Liability coverage", "Collision and Comprehensive", "Roadside assistance", "Uninsured motorist"],
+        "url": "https://theinsuranceboss.com/auto-insurance/",
+        "quote_form": "auto_quote"
+      },
+      "homeowners": {
+        "title": "Homeowners Insurance",
+        "description": "Protects the home structure and personal liability. (Note: Standard policies exclude floods/earthquakes).",
+        "features": ["Dwelling protection", "Personal property coverage", "Liability insurance", "Loss of use"],
+        "url": "https://theinsuranceboss.com/homeownersinsurance/",
+        "quote_form": "home_insurance"
+      },
+      "umbrella": {
+        "title": "Umbrella Insurance",
+        "description": "Extra liability protection beyond standard limits for those with significant assets.",
+        "features": ["High liability limits", "Covers beyond auto/home", "Worldwide coverage", "Legal defense costs"],
+        "url": "https://theinsuranceboss.com/umbrellainsurance/"
+      },
+      "landlord_dwelling": {
+        "title": "Landlord / Dwelling",
+        "description": "Specialized coverage for rental properties (structure, liability, and loss of rental income).",
+        "features": ["Property damage", "Liability claims", "Loss of rental income", "Tenant-caused damage"],
+        "url": "https://theinsuranceboss.com/landlord-dwelling/"
+      },
+      "flood": {
+        "title": "Flood Insurance",
+        "description": "Building and contents coverage for external water damage (NFIP or private).",
+        "features": ["Building coverage", "Contents coverage", "Meets lender requirements"],
+        "url": "https://theinsuranceboss.com/flood/"
+      },
+      "specialty_vehicles": {
+        "title": "Specialty Vehicles",
+        "description": "Coverage for motorcycles, RVs, boats, ATVs, watercraft, and classic cars.",
+        "features": ["Specialized valuation", "Agreed value coverage", "Custom parts protection"],
+        "url": "https://theinsuranceboss.com/specialty-vehicles/"
+      }
+    },
+    "retirement_investment": {
+      "iras": {
+        "title": "IRAs",
+        "description": "Traditional and Roth options for tax-advantaged retirement savings.",
+        "url": "https://theinsuranceboss.com/iras/"
+      },
+      "college_savings": {
+        "title": "College Savings / 529 Plans",
+        "description": "Tax-free growth and withdrawals for qualified education expenses.",
+        "url": "https://theinsuranceboss.com/college-savings/"
+      },
+      "annuities": {
+        "title": "Annuities",
+        "description": "Contracts providing guaranteed lifetime income and growth.",
+        "url": "https://theinsuranceboss.com/annuities/"
+      },
+      "401k_rollovers": {
+        "title": "401(k) Rollovers",
+        "description": "Tax-free transfers from former employers to maintain investment control.",
+        "url": "https://theinsuranceboss.com/401k-rollovers/"
+      }
+    }
+  },
+  "forms": {
+    "auto_quote": {
+      "name": "Auto Quote",
+      "url": "https://new-form-project-658b99.zapier.app",
+      "embed_id": "cmlbeiw1j003gunucow0g25vs"
+    },
+    "home_insurance": {
+      "name": "Home Insurance",
+      "url": "https://new-form-project-0993fb.zapier.app",
+      "embed_id": "cmm9mlcmb0068xylc24bv0dla"
+    },
+    "business_workers_comp": {
+      "name": "Business Workers Comp",
+      "url": "https://new-form-project-1806cf.zapier.app",
+      "embed_id": "cmlb1m2j1004611fe3g8e9k0v"
+    },
+    "life_insurance": {
+      "name": "Life Insurance",
+      "url": "https://new-form-project-478871.zapier.app",
+      "embed_id": "cmnoyuib00030kmysjkoxg2b2"
+    },
+    "customer_info": {
+      "name": "Customer Information",
+      "url": "https://interfaces.zapier.com/embed/page/cmokel9hq000yxtpxxo9b73yk",
+      "embed_id": "cmokel9hq000yxtpxxo9b73yk"
+    }
+  },
+  "faq": [
+    {
+      "question": "Is The Insurance Boss an insurance company?",
+      "answer": "No. The Insurance Boss is a marketing and consulting engine that analyzes coverage and connects clients with licensed insurance professionals and agencies."
+    },
+    {
+      "question": "How does the free policy review work?",
+      "answer": "Simply upload your current policy. Their AI-powered review tool and licensed professionals analyze it for gaps, overpricing, and missed opportunities at no cost."
+    },
+    {
+      "question": "Am I required to switch insurance after a review?",
+      "answer": "No. The role is to educate and advise. You are never obligated to switch policies."
+    }
+  ]
+}
