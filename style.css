@@ -105,6 +105,7 @@ body {
     opacity: 0;
     transform: scale(0.7) translateY(40px);
     pointer-events: none;
+    visibility: hidden;
 }
 
 /* Header */
@@ -257,6 +258,8 @@ body {
 
 .form-container.hidden {
     transform: translateY(100%);
+    pointer-events: none;
+    visibility: hidden;
 }
 
 .form-header {
@@ -307,6 +310,8 @@ body {
     outline: none;
     transition: all 0.3s;
     font-size: 15px;
+    pointer-events: auto !important;
+    user-select: text !important;
 }
 
 #user-input:focus {

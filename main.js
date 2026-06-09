@@ -11,7 +11,7 @@ const CONFIG = {
 // State Management
 let chatOpen = false;
 let knowledgeBase = null;
-let synthesis = window.speechSynthesis;
+let synthesis = typeof window !== 'undefined' ? window.speechSynthesis : null;
 let isSpeaking = false;
 let onboardingStep = 'fullName'; // fullName, email, voice, ready
 let userData = {
@@ -22,63 +22,95 @@ let messageHistory = [];
 let utteranceVoice = null;
 
 // DOM Elements
-const chatToggle = document.getElementById('chat-toggle');
-const chatWindow = document.getElementById('chat-window');
-const closeChat = document.getElementById('close-chat');
-const micToggle = document.getElementById('mic-toggle');
-const micIcon = document.getElementById('mic-icon');
-const voiceSettingsBtn = document.getElementById('voice-settings-btn');
-const voiceSettingsModal = document.getElementById('voice-settings-modal');
-const closeVoiceSettings = document.getElementById('close-voice-settings');
-const voiceListContainer = document.getElementById('voice-list');
-const muteToggle = document.getElementById('mute-toggle');
-const muteIcon = document.getElementById('mute-icon');
-const chatForm = document.getElementById('chat-form');
-const userInput = document.getElementById('user-input');
-const chatMessages = document.getElementById('chat-messages');
-const windowAvatar = document.getElementById('window-avatar');
-const formContainer = document.getElementById('form-container');
-const closeFormBtn = document.getElementById('close-form');
-const formEmbedArea = document.getElementById('zapier-form-embed');
-const formTitleEl = document.getElementById('form-title');
+let chatToggle = null;
+let chatWindow = null;
+let closeChat = null;
+let micToggle = null;
+let micIcon = null;
+let voiceSettingsBtn = null;
+let voiceSettingsModal = null;
+let closeVoiceSettings = null;
+let voiceListContainer = null;
+let muteToggle = null;
+let muteIcon = null;
+let chatForm = null;
+let userInput = null;
+let chatMessages = null;
+let windowAvatar = null;
+let formContainer = null;
+let closeFormBtn = null;
+let formEmbedArea = null;
+let formTitleEl = null;
 
 // Speech Recognition
-let recognition;
+let recognition = null;
 let isListening = false;
 
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
+function initSpeechRecognition() {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
 
-    recognition.onstart = () => {
-        isListening = true;
-        micToggle.classList.add('active');
-        userInput.placeholder = "Listening...";
-    };
+        recognition.onstart = () => {
+            isListening = true;
+            if (micToggle) micToggle.classList.add('active');
+            if (userInput) userInput.placeholder = "Listening...";
+        };
 
-    recognition.onend = () => {
-        isListening = false;
-        micToggle.classList.remove('active');
-        userInput.placeholder = "Ask about insurance...";
-    };
+        recognition.onend = () => {
+            isListening = false;
+            if (micToggle) micToggle.classList.remove('active');
+            if (userInput) userInput.placeholder = "Ask about insurance...";
+        };
 
-    recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        userInput.value = transcript;
-        chatForm.dispatchEvent(new Event('submit'));
-    };
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            if (userInput) {
+                userInput.value = transcript;
+                if (chatForm) chatForm.dispatchEvent(new Event('submit'));
+            }
+        };
 
-    recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        micToggle.classList.remove('active');
-    };
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            if (micToggle) micToggle.classList.remove('active');
+        };
+    }
 }
 
 // Initialize
 async function init() {
+    // 1. Setup DOM References
+    chatToggle = document.getElementById('chat-toggle');
+    chatWindow = document.getElementById('chat-window');
+    closeChat = document.getElementById('close-chat');
+    micToggle = document.getElementById('mic-toggle');
+    micIcon = document.getElementById('mic-icon');
+    voiceSettingsBtn = document.getElementById('voice-settings-btn');
+    voiceSettingsModal = document.getElementById('voice-settings-modal');
+    closeVoiceSettings = document.getElementById('close-voice-settings');
+    voiceListContainer = document.getElementById('voice-list');
+    muteToggle = document.getElementById('mute-toggle');
+    muteIcon = document.getElementById('mute-icon');
+    chatForm = document.getElementById('chat-form');
+    userInput = document.getElementById('user-input');
+    chatMessages = document.getElementById('chat-messages');
+    windowAvatar = document.getElementById('window-avatar');
+    formContainer = document.getElementById('form-container');
+    closeFormBtn = document.getElementById('close-form');
+    formEmbedArea = document.getElementById('zapier-form-embed');
+    formTitleEl = document.getElementById('form-title');
+
+    // 2. Initialize Speech Recognition
+    initSpeechRecognition();
+
+    // 3. Attach DOM Event Listeners safely
+    attachEventListeners();
+
+    // 4. Load Knowledge Base
     try {
         const kbUrl = window.INSURANCE_BOSS_BASE_URL 
             ? `${window.INSURANCE_BOSS_BASE_URL}/${CONFIG.KNOWLEDGE_BASE_URL}` 
@@ -91,9 +123,13 @@ async function init() {
         startOnboarding();
         
         // Pre-load voices
-        synthesis.getVoices();
+        if (synthesis) {
+            synthesis.getVoices();
+        }
     } catch (error) {
         console.error('Failed to load knowledge base:', error);
+        // Fallback: Start onboarding anyway so the user can interact
+        startOnboarding();
     }
 }
 
@@ -101,52 +137,103 @@ function startOnboarding() {
     appendMessage('bot', "Welcome to The Insurance Boss! I'm here to help you get the best coverage. To get started, what is your <b>Full Name</b>?");
 }
 
-// UI Actions
-chatToggle.addEventListener('click', () => {
-    chatOpen = !chatOpen;
-    chatWindow.classList.toggle('hidden');
-    if (chatOpen) userInput.focus();
-    
-    if (chatOpen && onboardingStep === 'fullName') {
-        notifySlack("Someone just opened the chatbot window!");
+function attachEventListeners() {
+    if (chatToggle) {
+        chatToggle.addEventListener('click', () => {
+            chatOpen = !chatOpen;
+            if (chatWindow) chatWindow.classList.toggle('hidden');
+            if (chatOpen && userInput) userInput.focus();
+            
+            if (chatOpen && onboardingStep === 'fullName') {
+                notifySlack("Someone just opened the chatbot window!");
+            }
+        });
     }
-});
 
-closeChat.addEventListener('click', () => {
-    chatOpen = false;
-    chatWindow.classList.add('hidden');
-    if (onboardingStep === 'ready') {
-        sendConversationSummary();
+    if (closeChat) {
+        closeChat.addEventListener('click', () => {
+            chatOpen = false;
+            if (chatWindow) chatWindow.classList.add('hidden');
+            if (onboardingStep === 'ready') {
+                sendConversationSummary();
+            }
+        });
     }
-});
 
-closeFormBtn.addEventListener('click', () => {
-    formContainer.classList.add('hidden');
-    formEmbedArea.innerHTML = '';
-});
-
-micToggle.addEventListener('click', () => {
-    if (!recognition) {
-        alert("Speech recognition is not supported in your browser.");
-        return;
+    if (closeFormBtn) {
+        closeFormBtn.addEventListener('click', () => {
+            if (formContainer) formContainer.classList.add('hidden');
+            if (formEmbedArea) formEmbedArea.innerHTML = '';
+        });
     }
-    if (isListening) {
-        recognition.stop();
-    } else {
-        recognition.start();
+
+    if (micToggle) {
+        micToggle.addEventListener('click', () => {
+            if (!recognition) {
+                alert("Speech recognition is not supported in your browser.");
+                return;
+            }
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
     }
-});
 
-voiceSettingsBtn.addEventListener('click', () => {
-    loadVoiceList();
-    voiceSettingsModal.classList.remove('hidden');
-});
+    if (voiceSettingsBtn) {
+        voiceSettingsBtn.addEventListener('click', () => {
+            loadVoiceList();
+            if (voiceSettingsModal) voiceSettingsModal.classList.remove('hidden');
+        });
+    }
 
-closeVoiceSettings.addEventListener('click', () => {
-    voiceSettingsModal.classList.add('hidden');
-});
+    if (closeVoiceSettings) {
+        closeVoiceSettings.addEventListener('click', () => {
+            if (voiceSettingsModal) voiceSettingsModal.classList.add('hidden');
+        });
+    }
+
+    if (muteToggle) {
+        muteToggle.addEventListener('click', () => {
+            CONFIG.IS_MUTED = !CONFIG.IS_MUTED;
+            if (CONFIG.IS_MUTED) {
+                if (synthesis) synthesis.cancel();
+                if (muteIcon) muteIcon.setAttribute('d', 'M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z');
+                muteToggle.style.color = '#ff4444';
+            } else {
+                if (muteIcon) muteIcon.setAttribute('d', 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z');
+                muteToggle.style.color = 'white';
+            }
+        });
+    }
+
+    if (chatForm) {
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!userInput) return;
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessage('user', text);
+            userInput.value = '';
+            
+            if (onboardingStep !== 'ready') {
+                handleOnboarding(text);
+                return;
+            }
+
+            const typingId = appendTypingIndicator();
+            const response = await getGeminiResponse(text);
+            removeTypingIndicator(typingId);
+            
+            processBotResponse(response);
+        });
+    }
+}
 
 function loadVoiceList() {
+    if (!synthesis || !voiceListContainer) return;
     const voices = synthesis.getVoices();
     voiceListContainer.innerHTML = '';
     
@@ -186,6 +273,7 @@ function loadVoiceList() {
 }
 
 function previewVoice(voice) {
+    if (!synthesis) return;
     synthesis.cancel();
     const preview = new SpeechSynthesisUtterance("Hello, I am the Insurance Boss. This is a preview of my voice.");
     preview.voice = voice;
@@ -194,41 +282,9 @@ function previewVoice(voice) {
 
 function selectVoice(voice) {
     utteranceVoice = voice;
-    voiceSettingsModal.classList.add('hidden');
+    if (voiceSettingsModal) voiceSettingsModal.classList.add('hidden');
     console.log(`Manually selected voice: ${voice.name}`);
 }
-
-muteToggle.addEventListener('click', () => {
-    CONFIG.IS_MUTED = !CONFIG.IS_MUTED;
-    if (CONFIG.IS_MUTED) {
-        synthesis.cancel();
-        muteIcon.setAttribute('d', 'M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z');
-        muteToggle.style.color = '#ff4444';
-    } else {
-        muteIcon.setAttribute('d', 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z');
-        muteToggle.style.color = 'white';
-    }
-});
-
-chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const text = userInput.value.trim();
-    if (!text) return;
-
-    appendMessage('user', text);
-    userInput.value = '';
-    
-    if (onboardingStep !== 'ready') {
-        handleOnboarding(text);
-        return;
-    }
-
-    const typingId = appendTypingIndicator();
-    const response = await getGeminiResponse(text);
-    removeTypingIndicator(typingId);
-    
-    processBotResponse(response);
-});
 
 function handleOnboarding(text) {
     if (onboardingStep === 'fullName') {
@@ -261,6 +317,7 @@ function formatBotText(text) {
 }
 
 function appendMessage(sender, text) {
+    if (!chatMessages) return;
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${sender}-message`;
     
@@ -315,6 +372,7 @@ async function sendConversationSummary() {
 }
 
 function appendSuggestions(suggestions) {
+    if (!chatMessages) return;
     const suggDiv = document.createElement('div');
     suggDiv.className = 'suggestions';
     
@@ -347,12 +405,15 @@ function handleSuggestion(s) {
         openForm(formKey);
     } else if (s.action.startsWith('topic:')) {
         const topic = s.action.split(':')[1];
-        userInput.value = `Tell me about ${topic} insurance`;
-        chatForm.dispatchEvent(new Event('submit'));
+        if (userInput) {
+            userInput.value = `Tell me about ${topic} insurance`;
+            if (chatForm) chatForm.dispatchEvent(new Event('submit'));
+        }
     }
 }
 
 function appendTypingIndicator() {
+    if (!chatMessages) return;
     const id = 'typing-' + Date.now();
     const typingDiv = document.createElement('div');
     typingDiv.id = id;
@@ -412,18 +473,21 @@ function processBotResponse(text) {
 }
 
 function openForm(formKey) {
+    if (!knowledgeBase || !knowledgeBase.forms) return;
     const formInfo = knowledgeBase.forms[formKey];
     if (!formInfo) return;
     
-    formTitleEl.innerText = formInfo.name;
-    formEmbedArea.innerHTML = `<zapier-interfaces-page-embed 
-        page-id='${formInfo.embed_id}' 
-        test-id='${formInfo.embed_id}-zapier-interfaces-page-embed-iframe'
-        no-background='false' 
-        style='width: 100%; height: 100%;'>
-    </zapier-interfaces-page-embed>`;
+    if (formTitleEl) formTitleEl.innerText = formInfo.name;
+    if (formEmbedArea) {
+        formEmbedArea.innerHTML = `<zapier-interfaces-page-embed 
+            page-id='${formInfo.embed_id}' 
+            test-id='${formInfo.embed_id}-zapier-interfaces-page-embed-iframe'
+            no-background='false' 
+            style='width: 100%; height: 100%;'>
+        </zapier-interfaces-page-embed>`;
+    }
     
-    formContainer.classList.remove('hidden');
+    if (formContainer) formContainer.classList.remove('hidden');
     notifySlack(`User *${userData.fullName}* opened the *${formInfo.name}* form.`);
 }
 
@@ -451,15 +515,22 @@ function speak(text) {
     }
     
     utterance.voice = selectedVoice || voices[0];
-    utterance.onstart = () => windowAvatar.classList.add('speaking');
-    utterance.onend = () => windowAvatar.classList.remove('speaking');
+    if (windowAvatar) {
+        utterance.onstart = () => windowAvatar.classList.add('speaking');
+        utterance.onend = () => windowAvatar.classList.remove('speaking');
+    }
     synthesis.speak(utterance);
 }
 
-if (synthesis.onvoiceschanged !== undefined) {
+if (synthesis && synthesis.onvoiceschanged !== undefined) {
     synthesis.onvoiceschanged = () => {
         console.log('System voices updated');
     };
 }
 
-init();
+// Ensure the DOM is fully loaded before initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
